@@ -12,9 +12,28 @@ func NewNetwork() *Network {
 	r := &Network{
 		engine: gin.New(), //New는 실제 프로덕트 환경에서, Default는 개발 환경에서
 	}
+
+	newUserRouter(r)
 	return r
 }
 
 func (n *Network) ServerStart(port string) error {
 	return n.engine.Run(port)
+}
+
+// register 유틸 함수들
+func (n *Network) registerGET(path string, handler ...gin.HandlerFunc) gin.IRoutes {
+	return n.engine.GET(path, handler...)
+}
+
+func (n *Network) registerPOST(path string, handler ...gin.HandlerFunc) gin.IRoutes {
+	return n.engine.POST(path, handler...)
+}
+
+func (n *Network) registerUPDATE(path string, handler ...gin.HandlerFunc) gin.IRoutes {
+	return n.engine.PUT(path, handler...)
+}
+
+func (n *Network) registerDELETE(path string, handler ...gin.HandlerFunc) gin.IRoutes {
+	return n.engine.DELETE(path, handler...)
 }
