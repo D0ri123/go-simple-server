@@ -3,6 +3,7 @@ package network
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go-server/types"
 	"sync"
 )
 
@@ -38,6 +39,21 @@ func (u *userRouter) create(c *gin.Context) {
 
 func (u *userRouter) get(c *gin.Context) {
 	fmt.Println("get 입니다.")
+	//u.router.okResponse(c, &types.ApiResponse{
+	//	Result:      200,
+	//	Description: "성공입니다.",
+	//})
+
+	u.router.okResponse(c, &types.UserResponse{
+		ApiResponse: &types.ApiResponse{
+			Result:      200,
+			Description: "성공입니다.",
+		},
+		User: &types.User{
+			Name: "이설희",
+			Age:  24,
+		},
+	})
 }
 
 func (u *userRouter) update(c *gin.Context) {
