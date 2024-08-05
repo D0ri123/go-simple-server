@@ -35,6 +35,7 @@ func newUserRouter(router *Network) *userRouter {
 // CRUD
 func (u *userRouter) create(c *gin.Context) {
 	fmt.Println("create 입니다.")
+	u.router.okResponse(c, types.NewApiResponse("성공입니다.", 1))
 }
 
 func (u *userRouter) get(c *gin.Context) {
@@ -44,11 +45,8 @@ func (u *userRouter) get(c *gin.Context) {
 	//	Description: "성공입니다.",
 	//})
 
-	u.router.okResponse(c, &types.UserResponse{
-		ApiResponse: &types.ApiResponse{
-			Result:      200,
-			Description: "성공입니다.",
-		},
+	u.router.okResponse(c, &types.GetUserResponse{
+		ApiResponse: types.NewApiResponse("성공입니다.", 1),
 		User: &types.User{
 			Name: "이설희",
 			Age:  24,
@@ -58,8 +56,19 @@ func (u *userRouter) get(c *gin.Context) {
 
 func (u *userRouter) update(c *gin.Context) {
 	fmt.Println("update 입니다.")
+
+	u.router.okResponse(c, &types.UpdateUserResponse{
+		ApiResponse: types.NewApiResponse("성공입니다.", 1),
+		User: &types.User{
+			Name: "변경된 이름",
+			Age:  24,
+		},
+	})
 }
 
 func (u *userRouter) delete(c *gin.Context) {
 	fmt.Println("delete 입니다.")
+	u.router.okResponse(c, &types.DeleteUserResponse{
+		ApiResponse: types.NewApiResponse("성공적으로 삭제했습니다.", 1),
+	})
 }
