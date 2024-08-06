@@ -37,10 +37,15 @@ func newUserRouter(router *Network, userService *service.User) *userRouter {
 
 // CRUD
 func (u *userRouter) create(c *gin.Context) {
-	fmt.Println("create 입니다.")
-	u.userService.Create(nil)
+	var req types.CreateRequest
 
-	u.router.okResponse(c, types.NewApiResponse("성공입니다.", 1))
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("바인딩 오류입니다.", -1, err.Error()))
+	} else if err = u.userService.Create(req.ToUser()); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("Create 오류입니다.", -1, err.Error()))
+	} else {
+		u.router.okResponse(c, types.NewApiResponse("성공입니다.", 1, nil))
+	}
 }
 
 func (u *userRouter) get(c *gin.Context) {
@@ -51,31 +56,43 @@ func (u *userRouter) get(c *gin.Context) {
 	//})
 
 	u.router.okResponse(c, &types.GetUserResponse{
-		ApiResponse: types.NewApiResponse("성공입니다.", 1),
+		ApiResponse: types.NewApiResponse("성공입니다.", 1, nil),
 		Users:       u.userService.Get(),
 	})
 }
 
 func (u *userRouter) update(c *gin.Context) {
+	var req types.UpdateUserRequest
 	fmt.Println("update 입니다.")
 
-	u.userService.Update(nil, nil)
-
-	u.router.okResponse(c, &types.UpdateUserResponse{
-		ApiResponse: types.NewApiResponse("성공입니다.", 1),
-		User: &types.User{
-			Name: "변경된 이름",
-			Age:  24,
-		},
-	})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("바인딩 오류입니다.", -1, err.Error()))
+	} else if err = u.userService.Update(req.Name, req.Age); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("Update 오류입니다.", -1, err.Error()))
+	} else {
+		u.router.okResponse(c, &types.UpdateUserResponse{
+			ApiResponse: types.NewApiResponse("성공입니다.", 1, nil),
+			User: &types.User{
+				Name: req.Name,
+				Age:  req.Age,
+			},
+		})
+	}
 }
 
 func (u *userRouter) delete(c *gin.Context) {
+	var req types.DeleteRequest
 	fmt.Println("delete 입니다.")
 
-	u.userService.Delete(nil)
+	if err := c.ShouldBindJSON(&req); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("바인딩 오류입니다.", -1, err.Error()))
+	} else if err = u.userService.Delete(req.ToUser()); err != nil {
+		u.router.failResponse(c, types.NewApiResponse("Delete 오류입니다.", -1, err.Error()))
+	} else {
+		u.router.okResponse(c, &types.DeleteUserResponse{
+			ApiResponse: types.NewApiResponse("성공적으로 삭제했습니다.", 1, nil),
+		})
 
-	u.router.okResponse(c, &types.DeleteUserResponse{
-		ApiResponse: types.NewApiResponse("성공적으로 삭제했습니다.", 1),
-	})
+	}
+
 }

@@ -23,10 +23,11 @@ func (u *User) Get() []*types.User {
 	return u.userRepository.Get()
 }
 
-func (u *User) Update(beforeUser, updateUser *types.User) error {
-	return u.userRepository.Update(beforeUser, updateUser)
+func (u *User) Update(name string, newAge int64) error {
+	return u.userRepository.Update(name, newAge)
 }
 
-func (u *User) Delete(newUser *types.User) error {
-	return u.userRepository.Delete(newUser)
+func (u *User) Delete(user *types.User) error {
+	//user라는 스트럭처를 어디에서 사용할지 모른다. repository를 통할 때는 필요한 필드만 넘겨주는게 좋다.
+	return u.userRepository.Delete(user.Name)
 }
