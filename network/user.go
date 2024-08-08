@@ -56,7 +56,7 @@ func (u *userRouter) get(c *gin.Context) {
 	//})
 
 	u.router.okResponse(c, &types.GetUserResponse{
-		ApiResponse: types.NewApiResponse("성공입니다.", 1, nil),
+		ApiResponse: types.NewApiResponse("성공입니다.222222 테스트중", 1, nil),
 		Users:       u.userService.Get(),
 	})
 }
